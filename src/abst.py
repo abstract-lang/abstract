@@ -1,13 +1,10 @@
 import sys
 from lexer import lex_pl
-from parser import ASTcreator
+from astcrearor import ASTcreator
 from runner import Runner
 
 if __name__ == '__main__':
     filename = sys.argv[1]
-    
-    if not filename.endswith('.abst') or not filename.endswith('.abstract'):
-        raise RuntimeError("Filename must ends .abst or .abstract string!")
     
     file = open(filename, encoding="utf-8")
     characters = file.read()
