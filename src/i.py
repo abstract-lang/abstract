@@ -1,7 +1,7 @@
 import sys
-from i_lexer import i_lex
-from i_parser import ASTcreator
-from i_runner import Runner
+from abst_lexer import i_lex
+from abst_parser import ASTcreator
+from abst_runner import Runner
 
 if __name__ == '__main__':
     filename = sys.argv[1]

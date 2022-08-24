@@ -1,4 +1,4 @@
-from i_lexer import *
+from abst_lexer import *
 
 class ASTcreator:
     def __init__(self, token_lines):
