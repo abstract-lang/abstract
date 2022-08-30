@@ -1,21 +1,25 @@
 import sys
 import re
 
-RESERVED = 'RESERVED'
-FUNCTION = 'FUNCTION'
-TYPE     = 'TYPE'
-INT      = 'INT'
-STR      = 'STRING'
-ID       = 'ID'
-FLOAT    = 'FLOAT'
-BOOL     = 'BOOLEAN'
-NEW_LINE = "NEW_LINE"
+RESERVED        = 'RESERVED'
+FUNCTION        = 'FUNCTION'
+TYPE            = 'TYPE'
+INT             = 'INT'
+STR             = 'STRING'
+ID              = 'ID'
+FLOAT           = 'FLOAT'
+BOOL            = 'BOOLEAN'
+NEW_LINE        = 'NEW_LINE'
+IF_ELSE         = 'IF_ELSE'
+STATEMENT_OPEN  = 'STATEMENT_OPEN'
+STATEMENT_CLOSE = 'STATEMENT_CLOSE'
+MATH_OPERATION  = 'MATH_OPERATION'
 
 token_exprs = [
-    (r';',                 NEW_LINE),
+    (r'\n',                 NEW_LINE),
     (r'[ \n\t]+',              None),
     (r'#\s*[^\n]*',            None),
-    (r' +',                    None),
+    (r'==',          MATH_OPERATION),
     (r'\(',                RESERVED),
     (r'\)',                RESERVED),
     (r'\+',                RESERVED),
@@ -23,6 +27,9 @@ token_exprs = [
     (r'\*',                RESERVED),
     (r'\/',                RESERVED),
     (r'\,',                RESERVED),
+    (r'{',           STATEMENT_OPEN),
+    (r'}',          STATEMENT_CLOSE),
+    (r'if',                 IF_ELSE),
     (r'print',             FUNCTION),
     (r'input',             RESERVED),
     (r'int',                   TYPE),
@@ -40,32 +47,28 @@ token_exprs = [
 ]
 
 def lex(characters):
-	pos = 0
-	tokens = []
-	while pos < len(characters):
-		match = None
-		for token_expr in token_exprs:
-			pattern, tag = token_expr
-			regex = re.compile(pattern)
-			match = regex.match(characters, pos)
-			if match:
-				text = match.group(0)
-				if tag:
-					if text == "\n\n":
-						token = ("\n", tag)
-					else:
-						token = (text, tag)
-					tokens.append(token)
-				break
-		if not match:
-			sys.stderr.write('Illegal character: %s\n' % characters[pos])
-			sys.exit(1)
-		else:
-			pos = match.end(0)
-	return tokens
+    pos = 0
+    tokens = []
+    while pos < len(characters):
+        match = None
+        for token_expr in token_exprs:
+            pattern, tag = token_expr
+            regex = re.compile(pattern)
+            match = regex.match(characters, pos)
+            if match:
+                text = match.group(0)
+                if tag:
+                    token = (text, tag)
+                    tokens.append(token)
+                break
+        if not match:
+            sys.stderr.write('Illegal character: %s\n' % characters[pos])
+            sys.exit(1)
+        else:
+            pos = match.end(0)
+    return tokens
 
-def lex_pl(characters):
-    resources = lex(characters)
+def lex_pl(resources):
     result = []
 
     last_new_line = 0
@@ -76,7 +79,7 @@ def lex_pl(characters):
             
             for _iter in range(len(_list)):
                 try:
-                    _list.remove((';', NEW_LINE))
+                    _list.remove(('\n', NEW_LINE))
                 except ValueError:
                     pass
             

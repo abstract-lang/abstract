@@ -1,6 +1,6 @@
 import sys
-from lexer import lex_pl
-from astcrearor import ASTcreator
+from lex import lex_pl, lex
+from parse import Parser
 from runner import Runner
 
 if __name__ == '__main__':
@@ -12,14 +12,20 @@ if __name__ == '__main__':
     characters += "\n"  # For fix error with ignoring last line
     
     file.close()
-    token_lines = lex_pl(characters)
-
-    ast_creator = ASTcreator(token_lines)
     
-    builded_ast = ast_creator.build()
+    resources = lex(characters)
+    token_lines = lex_pl(resources)
+    
+    parsed = Parser(resources, token_lines).parse()
+    
+    Runner(parsed).run()
+
+    # ast_creator = ASTcreator(token_lines)
+    
+    # builded_ast = ast_creator.build()
     
     # print(builded_ast)
     
-    runner = Runner(builded_ast)
+    # runner = Runner(builded_ast)
     
-    runner.run()
+    # runner.run()
