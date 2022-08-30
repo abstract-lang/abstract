@@ -1,5 +1,5 @@
 import sys
-from lex import lex_pl, lex
+from lexpl import lex_pl, lex
 from parse import Parser
 from runner import Runner
 

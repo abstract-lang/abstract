@@ -38,7 +38,7 @@ token_exprs = [
     (r'flo',                   TYPE),
     (r'true',                  BOOL),
     (r'false',                 BOOL),
-    (r'\d{1,}.\d{1,}',        FLOAT),
+    (r'[0-9]+\.[0-9]+',       FLOAT),
     (r'"[^\n]{0,}"',            STR),
     (r"'[^\n]{0,}'",            STR),
     (r'=',                 RESERVED),

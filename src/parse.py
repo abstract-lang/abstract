@@ -1,4 +1,4 @@
-from lex import *
+from lexpl import *
 from asts import *
 
 class Parser:
