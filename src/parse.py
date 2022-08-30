@@ -26,7 +26,18 @@ class Parser:
                     return line[token_index + num]
                 
                 if tag == TYPE:
-                    ast.append(Var(types[text](next(3)[0]), next()[0]))
+                    _ast = None
+                    
+                    if text == "str":
+                        if next(4)[0] == "+":
+                            first = Str(next(3)[0])
+                            second = Str(next(5)[0])
+                            
+                            _ast = Var(types[text](f"'{str(first)}{str(second)}'"), next()[0])
+                    else:
+                        _ast = Var(types[text](next(3)[0]), next()[0])
+
+                    ast.append(_ast)
                 
                 if tag == FUNCTION:
                     funcs = {

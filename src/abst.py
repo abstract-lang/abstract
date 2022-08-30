@@ -14,18 +14,11 @@ if __name__ == '__main__':
     file.close()
     
     resources = lex(characters)
+    print(resources)
     token_lines = lex_pl(resources)
+    
+    print(token_lines)
     
     parsed = Parser(resources, token_lines).parse()
     
     Runner(parsed).run()
-
-    # ast_creator = ASTcreator(token_lines)
-    
-    # builded_ast = ast_creator.build()
-    
-    # print(builded_ast)
-    
-    # runner = Runner(builded_ast)
-    
-    # runner.run()
