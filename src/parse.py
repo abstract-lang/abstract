@@ -26,7 +26,7 @@ class Parser:
                     return line[token_index + num]
                 
                 if tag == TYPE:
-                    _ast = None
+                    _ast = Var(types[text](next(3)[0]), next()[0])
                     
                     if text == "str":
                         if next(4)[0] == "+":
@@ -34,8 +34,15 @@ class Parser:
                             second = Str(next(5)[0])
                             
                             _ast = Var(types[text](f"'{str(first)}{str(second)}'"), next()[0])
-                    else:
-                        _ast = Var(types[text](next(3)[0]), next()[0])
+                    if text == "int":
+                        _int = next(3)[0]
+                        if next(4)[0] == "+":
+                            first = Int(next(3)[0])
+                            second = Int(next(5)[0])
+                            
+                            _int = first.val + second.val
+
+                        _ast = Var(types[text](_int), next()[0])
 
                     ast.append(_ast)
                 
