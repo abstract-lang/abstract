@@ -36,11 +36,18 @@ class Parser:
                             _ast = Var(types[text](f"'{str(first)}{str(second)}'"), next()[0])
                     if text == "int":
                         _int = next(3)[0]
-                        if next(4)[0] == "+":
+                        if next(4)[1] == MATH_OPERATION:
                             first = Int(next(3)[0])
                             second = Int(next(5)[0])
                             
-                            _int = first.val + second.val
+                            if next(4)[0] == "+":
+                                _int = first.val + second.val
+                            elif next(4)[0] == "-":
+                                _int = first.val - second.val
+                            elif next(4)[0] == "*":
+                                _int = first.val * second.val
+                            elif next(4)[0] == "/":
+                                _int = first.val / second.val
 
                         _ast = Var(types[text](_int), next()[0])
 
