@@ -1,100 +1,42 @@
+from typing import Callable, TypeAlias, Any
 from abc import ABC, abstractmethod
 
-# Abstract class for other classes
+FunctionCallback: TypeAlias = Callable
+
+VarName: TypeAlias = str 
+TypeName: TypeAlias = str
+
+VType: TypeAlias = str
+RType: TypeAlias = str
+
 class ASTobject(ABC):
-    pass
-
-# Abstract classes
-class Type(ASTobject, ABC):
     @abstractmethod
-    def __str__(self) -> str:
-        pass
-
-class Function(ASTobject, ABC):
+    def __init__(self, *args, **kwargs) -> None: ...
     @abstractmethod
-    def __init__(self, *args, **kwargs) -> None:
-        pass
+    def _eval_(self, *args, **kwargs) -> Any: ...
 
-    @abstractmethod
-    def run(self, *args, **kwargs):
-        pass
+class Type(ASTobject):
+    def __init__(self, name: TypeName) -> None:
+        self.name = name
+    def _eval_(self, *args, **kwargs) -> Any:
+        return super()._eval_(*args, **kwargs)
 
-class Statement(ASTobject, ABC):
-    @abstractmethod
-    def __init__(self, tokens, *args, **kwargs) -> None:
-        pass
-    
-    @abstractmethod
-    def run(self):
-        pass
+class Argument(ASTobject):
+    def __init__(self, name: VarName, vtype: VType) -> None:
+        self.name = name
+        self.vtype = vtype
+    def _eval_(self, *args, **kwargs) -> Any:
+        return super()._eval_(*args, **kwargs)
 
-# Types
-class Str(Type):
-    def __init__(self, s: str) -> None:
-        val = s
-        
-        if val.startswith('"') and val.endswith('"'):
-            val = val.replace('"', '')
-        
-        elif val.startswith("'") and val.endswith("'"):
-            val = val.replace("'", '')
-        else:
-            raise RuntimeError("Invalid literal for str type!")
-        self.val = val
-    def __str__(self) -> str:
-        return str(self.val)
+class Signature(ASTobject):
+    def __init__(self, *args: list[Argument], rtype: RType) -> None:
+        self.args = args
+        self.rtype = rtype
+    def _eval_(self, *args, **kwargs) -> Any:
+        return super()._eval_(*args, **kwargs)
 
-
-class Int(Type):
-    def __init__(self, s: str) -> None:
-        self.val = int(s)
-    def __str__(self) -> str:
-        return str(self.val)
-
-
-class Flo(Type):
-    def __init__(self, s: str) -> None:
-        self.val = float(s)
-    def __str__(self) -> str:
-        return str(self.val)
-
-
-class Bool(Type):
-    def __init__(self, s: str) -> None:
-        true_false_dict = {
-            "true": True,
-            "false": False
-        }
-        try:
-            self.val = true_false_dict[s]
-        except KeyError:
-            raise RuntimeError("Invalid literal for bool type!")
-    def __str__(self) -> str:
-        return "true" if self.val else "false"
-
-# Variables
-class Var:
-    def __init__(self, v, name) -> None:
-        self.value = v
-        self.id = name
-
-
-class VarIndex:
-    def __init__(self, name: str) -> None:
-        self.id = name
-
-# Functions
-class Print(Function):
-    def __init__(self, args) -> None:
-        try:
-            self.arg = args[0]
-        except IndexError:
-            self.arg = ""
-        
-        try:
-            self.end = args[1]
-        except IndexError:
-            self.end = "\n"
-    
-    def run(self):
-        print(self.arg, end=self.end)
+class Function(ASTobject):
+    def __init__(self, signature: Signature) -> None:
+        self.signature = signature
+    def _eval_(self, *args, **kwargs):
+        raise NotImplementedError('This method is not implemented!')
